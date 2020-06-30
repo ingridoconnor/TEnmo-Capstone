@@ -21,6 +21,6 @@ public class AccountController {
 	}
 	@RequestMapping(path = "/{id}/balance", method = RequestMethod.GET)
 	public BigDecimal getBalance(@PathVariable long id) {
-		return accountDao.viewCurrentBalance();
+		return accountDao.viewCurrentBalance(id);
 	}
 }
