@@ -44,6 +44,7 @@ public class TransferSqlDAO implements TransferDAO {
 		return (jdbcTemplate.update(sqlAddMoney, receiveAccount.getAccountBalance().add(amount),
 				receiveAccount.getUserId()) == 1);
 	}
+	
 	// Creates new row in transfers table
 
 }
