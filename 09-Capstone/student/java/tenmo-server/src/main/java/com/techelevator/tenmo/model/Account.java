@@ -31,4 +31,14 @@ public class Account {
 		this.accountBalance = accountBalance;
 	}
 
+	public boolean equals(Account account) {
+		return (this.getUserId() == account.getUserId() && this.getAccountId() == account.getAccountId()
+				&& this.getAccountBalance().compareTo(account.getAccountBalance()) == 0);
+	}
+
+	// Check sufficient balance from payer account
+	public boolean hasEnoughMoney(BigDecimal amount) {
+		return (this.getAccountBalance().compareTo(amount) >= 0);
+	}
+
 }
