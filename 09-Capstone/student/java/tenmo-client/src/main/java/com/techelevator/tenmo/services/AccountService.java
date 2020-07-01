@@ -26,7 +26,7 @@ public class AccountService {
    public BigDecimal getBalance(User user) {
 	   BigDecimal account = null;
 	   try {
-		   account = restTemplate.exchange(BASE_URL + "/" + user.getId() + "/balance", HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
+		   account = restTemplate.exchange(BASE_URL + "/{id}/balance", HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
 	   }catch (RestClientResponseException ex) {
 		   //TODO account service exception class
            //throw new AccountServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
