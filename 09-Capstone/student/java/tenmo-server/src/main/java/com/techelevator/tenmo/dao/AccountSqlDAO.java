@@ -41,6 +41,7 @@ public class AccountSqlDAO implements AccountDAO {
 		return null;
 	}
 	
+	@Override
 	public Account findAccountByUserId(long userId) {
 		Account account = null;
 		String sql = "SELECT * FROM accounts WHERE user_id = ?";

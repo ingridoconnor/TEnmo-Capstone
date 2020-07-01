@@ -12,9 +12,11 @@ import com.techelevator.tenmo.model.Transfer;
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
+	private AccountDAO accountDao;
 
-	public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
+	public TransferSqlDAO(JdbcTemplate jdbcTemplate, AccountDAO accountDao) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.accountDao = accountDao;
 	}
 
 	@Override
@@ -26,6 +28,13 @@ public class TransferSqlDAO implements TransferDAO {
 	@Override
 	public void send(long senderId, long receiverId, BigDecimal amount) {
 		// Take money from sender
+//		String sqlGetPayerAccount = "SELECT * FROM accounts WHERE user_id = ?";
+//		SqlRowSet result = jdbcTemplate.queryForRowSet(sqlGetPayerAccount, senderId);
+//		Account payer = new Account(); 
+//		if (result.next()) {
+//			payer = map
+//		}
+//		if (deductFromAccount())
 		// Put money into receiver
 		// Stick results into transfer
 	}
