@@ -12,7 +12,7 @@ public interface AccountDAO {
 	
 	BigDecimal deductBalance(BigDecimal amountToSubtract);
 	
-	
+	Account findAccountByUserId(long userId);
 	
 
 }

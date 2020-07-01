@@ -7,6 +7,21 @@ public class Account {
 	private long userId;
 	private BigDecimal accountBalance;
 
+	public Account() {
+		this.accountBalance = new BigDecimal("0.00");
+	}
+	
+	public Account(long accountId, BigDecimal currentBalance) {
+		this.accountId = accountId;
+		this.accountBalance = currentBalance;
+	}
+	
+	public Account(long accountId, long userId, BigDecimal currentBalance) {
+		this.accountId = accountId;
+		this.userId = userId;
+		this.accountBalance = currentBalance;
+	}
+	
 	public long getAccountId() {
 		return accountId;
 	}

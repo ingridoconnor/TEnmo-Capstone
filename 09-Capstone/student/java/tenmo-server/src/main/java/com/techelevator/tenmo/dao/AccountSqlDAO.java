@@ -40,6 +40,16 @@ public class AccountSqlDAO implements AccountDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Account findAccountByUserId(long userId) {
+		Account account = null;
+		String sql = "SELECT * FROM accounts WHERE user_id = ?";
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
+		if (result.next()) {
+			account = mapRowToAccount(result);
+		}
+		return account;
+	}
 
 	private Account mapRowToAccount(SqlRowSet results) {
 		Account account = new Account();
