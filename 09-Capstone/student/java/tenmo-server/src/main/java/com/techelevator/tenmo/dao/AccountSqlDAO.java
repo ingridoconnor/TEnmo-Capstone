@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
 
-@Service
+
 @Component
 public class AccountSqlDAO implements AccountDAO {
 	private JdbcTemplate jdbcTemplate;

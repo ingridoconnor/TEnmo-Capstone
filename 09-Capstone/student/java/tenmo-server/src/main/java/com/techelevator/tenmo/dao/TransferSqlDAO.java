@@ -3,9 +3,12 @@ package com.techelevator.tenmo.dao;
 import java.math.BigDecimal;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import com.techelevator.tenmo.model.Account;
-
+import com.techelevator.tenmo.model.Transfer;
+@Component
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
@@ -44,7 +47,39 @@ public class TransferSqlDAO implements TransferDAO {
 		return (jdbcTemplate.update(sqlAddMoney, receiveAccount.getAccountBalance().add(amount),
 				receiveAccount.getUserId()) == 1);
 	}
-	
+
 	// Creates new row in transfers table
+	private boolean addedRowToTransfer(Transfer transfer) {
+
+		String sqlGetTransferTypeId = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
+		SqlRowSet transferTypeResult = jdbcTemplate.queryForRowSet(sqlGetTransferTypeId, transfer.getTransferType());
+		int transferTypeId = 0;
+		if (transferTypeResult.next()) {
+			transferTypeId = transferTypeResult.getInt("transfer_type_id");
+
+		}
+		String sqlGetTransferStatusId = "SELECT transfer_Status_id FROM transfer_statuses WHERE transfer_status_desc = ?";
+		SqlRowSet transferStatusResult = jdbcTemplate.queryForRowSet(sqlGetTransferStatusId,
+				transfer.getTransferStatus());
+		int transferStatusId = 0;
+		if (transferStatusResult.next()) {
+			transferStatusId = transferStatusResult.getInt("transfer_status_id");
+
+		}
+		if (transferStatusId > 0 && transferTypeId > 0) {
+			String sqlAddRowToTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
+					+ "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
+			SqlRowSet transferIdResult = jdbcTemplate.queryForRowSet(sqlAddRowToTransfer, transferTypeId,
+					transferStatusId, transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
+			if (transferIdResult.next()) {
+				transfer.setTransferId(transferIdResult.getLong("transfer_id"));
+				return true;
+
+			}
+		}
+
+		return false;
+
+	}
 
 }
