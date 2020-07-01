@@ -32,13 +32,15 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AccountService accountService;
 
     public static void main(String[] args) {
-    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
+    	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL), 
+    			new AccountService(API_BASE_URL));
     	app.run();
     }
 
-    public App(ConsoleService console, AuthenticationService authenticationService) {
+    public App(ConsoleService console, AuthenticationService authenticationService, AccountService accountService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		this.accountService = accountService;
 	}
 
 	public void run() {
@@ -73,8 +75,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		User user = currentUser.getUser();
-		BigDecimal balance = accountService.getBalance(user);
+		//System.out.println("user = " + user.getUsername());
+		BigDecimal balance = accountService.getBalance(currentUser);
 		System.out.printf("\nYour current balance is: $%.2f", balance);
 		
 	}

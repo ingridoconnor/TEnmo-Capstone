@@ -9,49 +9,48 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-
+import com.techelevator.tenmo.models.Account;
+import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.User;
-
-
 
 public class AccountService {
 	public static String AUTH_TOKEN = "";
-    private final String BASE_URL;
-    public RestTemplate restTemplate = new RestTemplate();
-    
-    
-    public AccountService(String url) {
-        BASE_URL = url;
-    }
-   public BigDecimal getBalance(User user) {
-	   BigDecimal account = null;
-	   try {
-		   account = restTemplate.exchange(BASE_URL + "/{id}/balance", HttpMethod.GET, makeAuthEntity(), BigDecimal.class).getBody();
-	   }catch (RestClientResponseException ex) {
-		   //TODO account service exception class
-           //throw new AccountServiceException(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
-       } return account;
-   }
+	private final String BASE_URL;
+	public RestTemplate restTemplate = new RestTemplate();
+
+	public AccountService(String url) {
+		BASE_URL = url;
+	}
 
 	
-    private HttpEntity<User> makeAccountEntity(User user) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(AUTH_TOKEN);
-        HttpEntity<User> entity = new HttpEntity<>(user, headers);
-        return entity;
-    }
+	public BigDecimal getBalance(AuthenticatedUser user) {
+		AUTH_TOKEN = user.getToken();
+		BigDecimal balance = new BigDecimal("0.00");
+		Account account = new Account();
+		try {
+			account = restTemplate
+					.exchange(BASE_URL + "account/balance", HttpMethod.GET, makeAccountEntity(user), Account.class).getBody();
+		} catch (RestClientResponseException ex) {
+			// TODO account service exception class
+			// throw new AccountServiceException(ex.getRawStatusCode() + " : " +
+			// ex.getResponseBodyAsString());
+		}
+		return account.getAccountBalance();
+	}
 
-   
-    private HttpEntity makeAuthEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(AUTH_TOKEN);
-        HttpEntity entity = new HttpEntity<>(headers);
-        return entity;
-    }
+	private HttpEntity<AuthenticatedUser> makeAccountEntity(AuthenticatedUser user) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(AUTH_TOKEN);
+		HttpEntity<AuthenticatedUser> entity = new HttpEntity<>(user, headers);
+		return entity;
+	}
 
-	
+	private HttpEntity makeAuthEntity() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(AUTH_TOKEN);
+		HttpEntity entity = new HttpEntity<>(headers);
+		return entity;
+	}
+
 }
-    
-
-
