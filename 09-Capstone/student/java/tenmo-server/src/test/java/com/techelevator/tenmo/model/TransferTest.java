@@ -27,24 +27,24 @@ class TransferTest {
 		test.setAccountFromId(accountFromId);
 		assertEquals(test.getAccountFromId(), accountFromId);
 	}
-	@Test
-	public void userFrom_returns_the_irs() {
-		String userFrom = "the irs";
-		test.setUserFrom(userFrom);
-		assertEquals(test.getUserFrom(), userFrom);
-	}
+//	@Test
+//	public void userFrom_returns_the_irs() {
+//		String userFrom = "the irs";
+//		test.setUserFrom(userFrom);
+//		assertEquals(test.getUserFrom(), userFrom);
+//	}
 	@Test
 	public void accountToId_returns_900() {
 		long accountToId = 900;
 		test.setAccountToId(accountToId);
 		assertEquals(test.getAccountToId(), accountToId);
 	}
-	@Test
-	public void userTo_returns_taxpayer() {
-		String userTo = "taxpayer";
-		test.setUserTo(userTo);
-		assertEquals(test.getUserTo(), userTo);
-	}
+//	@Test
+//	public void userTo_returns_taxpayer() {
+//		String userTo = "taxpayer";
+//		test.setUserTo(userTo);
+//		assertEquals(test.getUserTo(), userTo);
+//	}
 	@Test
 	public void amount_returns_1200() {
 		BigDecimal amount = BigDecimal.valueOf(1200.00);
