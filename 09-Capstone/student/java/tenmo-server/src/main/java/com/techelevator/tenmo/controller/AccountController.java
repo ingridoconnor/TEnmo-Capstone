@@ -53,9 +53,15 @@ public class AccountController {
 			accountDao.creditBalance(giveTo, transfer.getAmount());
 			transferDao.addRowToTransfer(transfer);
 		} 
+	}
 	@RequestMapping(path = "/transfers/approved", method = RequestMethod.GET)
-	public Transfer[] getTransferHistory() {
-		List<Transfer> transferList = transferDao.
+	public Transfer[] getTransferHistory(Principal principal) {
+		User user = userDao.findByUsername(principal.getName());
+		Account account = accountDao.findAccountByUserId(user.getId());
+		List<Transfer> transferList = transferDao.getAllTransfers(account);
+		Transfer[] transfers = new Transfer[transferList.size()];
+		transfers = transferList.toArray(transfers);
+		return transfers;
 	}
 	
 

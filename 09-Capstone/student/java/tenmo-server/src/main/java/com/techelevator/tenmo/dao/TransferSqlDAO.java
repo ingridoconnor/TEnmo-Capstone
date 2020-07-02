@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
 @Component
 public class TransferSqlDAO implements TransferDAO {
 
@@ -20,13 +20,13 @@ public class TransferSqlDAO implements TransferDAO {
 		
 	}
 	@Override
-	public List<Transfer> getAllTransfers(){
+	public List<Transfer> getAllTransfers(Account account){
 		List<Transfer> transfers = new ArrayList<>();
-		String sql = "SELECT * FROM transfers";
+		String sql = "SELECT * FROM transfers AS t INNER JOIN transfer_statuses AS ts ON t.transfer_status_id = ts.transfer_status_id INNER JOIN transfer_types AS tt ON t.transfer_type_id = tt.transfer_type_id WHERE t.account_from = ? OR t.account_to = ?";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account.getAccountId(), account.getAccountId());
         while(results.next()) {
-            Transfer transfer = addRowToTransfer(results);
+            Transfer transfer = mapRowToTransfer(results);
             transfers.add(transfer);
         }
 
@@ -85,7 +85,11 @@ public class TransferSqlDAO implements TransferDAO {
 		Transfer transfer = new Transfer();
 		transfer.setAccountFromId(results.getLong("account_from"));
 		transfer.setAccountToId(results.getLong("account_to"));
-		transfer.set
+		transfer.setAmount(results.getBigDecimal("amount"));
+		transfer.setTransferId(results.getLong("transfer_id"));
+		transfer.setTransferStatus(results.getString("transfer_status_desc"));
+		transfer.setTransferType(results.getString("transfer_type_desc"));
+		return transfer;
 	}
 
 
