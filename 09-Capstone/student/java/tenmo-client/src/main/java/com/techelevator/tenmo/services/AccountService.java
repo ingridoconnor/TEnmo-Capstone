@@ -41,7 +41,7 @@ public class AccountService {
 	public void sendTransfer(AuthenticatedUser user, Transfer transfer) {
 		AUTH_TOKEN = user.getToken();
 		try {
-			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.POST, makeAuthEntity(), Transfer.class);
+			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.PUT, makeAuthEntity(), Transfer.class);
 		} catch (RestClientResponseException ex) {
             // TODO write an AccountServiceException?
         }

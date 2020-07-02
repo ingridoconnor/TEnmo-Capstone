@@ -44,7 +44,7 @@ public class AccountController {
 		return account;
 	}
 
-	@RequestMapping(path = "/sendbucks", method = RequestMethod.POST)
+	@RequestMapping(path = "/sendbucks", method = RequestMethod.PUT)
 	public void sendBucks(@RequestBody Transfer transfer) {
 		Account takeFrom = accountDao.findAccountByUserId(transfer.getAccountFromId());
 		Account giveTo = accountDao.findAccountByUserId(transfer.getAccountToId());
