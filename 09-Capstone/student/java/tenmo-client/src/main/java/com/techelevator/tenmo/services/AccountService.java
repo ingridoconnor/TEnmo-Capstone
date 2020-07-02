@@ -41,7 +41,7 @@ public class AccountService {
 	public void sendTransfer(AuthenticatedUser user, Transfer transfer) {
 		AUTH_TOKEN = user.getToken();
 		try {
-			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.PUT, makeAuthEntity(), Transfer.class);
+			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.PUT, makeTransferEntity(transfer), Transfer.class);
 		} catch (RestClientResponseException ex) {
             // TODO write an AccountServiceException?
         }
@@ -57,6 +57,14 @@ public class AccountService {
             // TODO write an AccountServiceException?
         }
 		return users;
+	}
+	
+	private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(AUTH_TOKEN);
+		HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+		return entity;
 	}
 
 	private HttpEntity<AuthenticatedUser> makeAccountEntity(AuthenticatedUser user) {

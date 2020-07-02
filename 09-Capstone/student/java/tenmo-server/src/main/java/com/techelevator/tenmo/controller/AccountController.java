@@ -48,11 +48,13 @@ public class AccountController {
 	public void sendBucks(@RequestBody Transfer transfer) {
 		Account takeFrom = accountDao.findAccountByUserId(transfer.getAccountFromId());
 		Account giveTo = accountDao.findAccountByUserId(transfer.getAccountToId());
-		accountDao.deductBalance(takeFrom, transfer.getAmount());
-		accountDao.creditBalance(giveTo, transfer.getAmount());
-		transferDao.addRowToTransfer(transfer);
+		if (takeFrom.hasEnoughMoney(transfer.getAmount())) {
+			accountDao.deductBalance(takeFrom, transfer.getAmount());
+			accountDao.creditBalance(giveTo, transfer.getAmount());
+			transferDao.addRowToTransfer(transfer);
+		} 
 	}
-	
+
 	@RequestMapping(path = "/finduser", method = RequestMethod.GET)
 	public User[] getAllUsers() {
 		List<User> userList = userDao.findAll();

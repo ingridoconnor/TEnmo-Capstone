@@ -122,14 +122,12 @@ public class App {
 		
 		// If the amount being sent is positive
 		// POST transfer object to server
-		// TODO not working yet
 		if (amount.compareTo(BigDecimal.ZERO) == 1) {
 			Transfer sendTransfer = new Transfer(TRANSFER_TYPE_SEND, TRANSFER_STATUS_APPROVED,
 					currentUser.getUser().getId(), (long) sendToChoice, amount);
 			accountService.sendTransfer(currentUser, sendTransfer);
+			viewCurrentBalance();
 		}
-
-		// Server sends confirmation note?
 
 	}
 
