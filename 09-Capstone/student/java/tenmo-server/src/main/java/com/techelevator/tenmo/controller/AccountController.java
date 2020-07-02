@@ -53,7 +53,11 @@ public class AccountController {
 			accountDao.creditBalance(giveTo, transfer.getAmount());
 			transferDao.addRowToTransfer(transfer);
 		} 
+	@RequestMapping(path = "/transfers/approved", method = RequestMethod.GET)
+	public Transfer[] getTransferHistory() {
+		List<Transfer> transferList = transferDao.
 	}
+	
 
 	@RequestMapping(path = "/finduser", method = RequestMethod.GET)
 	public User[] getAllUsers() {

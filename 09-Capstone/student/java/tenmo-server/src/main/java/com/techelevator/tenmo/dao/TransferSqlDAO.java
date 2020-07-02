@@ -1,13 +1,14 @@
 package com.techelevator.tenmo.dao;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 @Component
 public class TransferSqlDAO implements TransferDAO {
 
@@ -18,27 +19,22 @@ public class TransferSqlDAO implements TransferDAO {
 		this.jdbcTemplate = jdbcTemplate;
 		this.accountDao = accountDao;
 	}
-
 	@Override
-	public void request(long requestSenderId, long requestReceiverId, BigDecimal amount) {
-		// TODO Optional
+	public List<Transfer> getAllTransfers(){
+		List<Transfer> transfers = new ArrayList<>();
+		String sql = "SELECT * FROM transfers";
 
-	}
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        while(results.next()) {
+            User user = addRowToTransfer(results);
+            users.add(user);
+        }
 
-	// Should this be part of AccountDAO instead? TransferDAO should only be talking to the transfers table
-	@Override
-	public void send(long senderId, long receiverId, BigDecimal amount) {
-		// Take money from sender
-//		String sqlGetPayerAccount = "SELECT * FROM accounts WHERE user_id = ?";
-//		SqlRowSet result = jdbcTemplate.queryForRowSet(sqlGetPayerAccount, senderId);
-//		Account payer = new Account(); 
-//		if (result.next()) {
-//			payer = map
-//		}
-//		if (deductFromAccount())
-		// Put money into receiver
-		// Stick results into transfer
-	}
+        return users;
+    }
+	
+
+
 
 	//Refactor: Separate method for retrieving transfer_type_id
 	private int getTransferTypeId(Transfer transfer) {
@@ -84,5 +80,9 @@ public class TransferSqlDAO implements TransferDAO {
 		return false;
 
 	}
+
+
+
+	
 
 }
