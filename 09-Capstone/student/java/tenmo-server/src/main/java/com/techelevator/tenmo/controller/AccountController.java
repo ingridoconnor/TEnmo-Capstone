@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -49,6 +51,13 @@ public class AccountController {
 		accountDao.deductBalance(takeFrom, transfer.getAmount());
 		accountDao.creditBalance(giveTo, transfer.getAmount());
 		transferDao.addRowToTransfer(transfer);
-
+	}
+	
+	@RequestMapping(path = "/finduser", method = RequestMethod.GET)
+	public User[] getAllUsers() {
+		List<User> userList = userDao.findAll();
+		User[] users = new User[userList.size()];
+		users = userList.toArray(users);
+		return users;
 	}
 }
