@@ -13,11 +13,11 @@ import com.techelevator.tenmo.model.User;
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
-	private AccountDAO accountDao;
+	
 
-	public TransferSqlDAO(JdbcTemplate jdbcTemplate, AccountDAO accountDao) {
+	public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
-		this.accountDao = accountDao;
+		
 	}
 	@Override
 	public List<Transfer> getAllTransfers(){
@@ -26,11 +26,11 @@ public class TransferSqlDAO implements TransferDAO {
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while(results.next()) {
-            User user = addRowToTransfer(results);
-            users.add(user);
+            Transfer transfer = addRowToTransfer(results);
+            transfers.add(transfer);
         }
 
-        return users;
+        return transfers;
     }
 	
 
@@ -79,6 +79,13 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 		return false;
 
+	}
+	
+	private Transfer mapRowToTransfer(SqlRowSet results) {
+		Transfer transfer = new Transfer();
+		transfer.setAccountFromId(results.getLong("account_from"));
+		transfer.setAccountToId(results.getLong("account_to"));
+		transfer.set
 	}
 
 
