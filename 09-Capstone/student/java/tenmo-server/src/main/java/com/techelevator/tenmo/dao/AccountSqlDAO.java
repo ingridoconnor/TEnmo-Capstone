@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
 
-
 @Component
 public class AccountSqlDAO implements AccountDAO {
 	private JdbcTemplate jdbcTemplate;
@@ -23,24 +22,36 @@ public class AccountSqlDAO implements AccountDAO {
 		String sql = "SELECT balance FROM accounts WHERE user_id = ?";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
 		BigDecimal balance = null;
-		if(results.next()) {
+		if (results.next()) {
 			balance = results.getBigDecimal("balance");
 		}
 		return balance;
 	}
 
 	@Override
-	public BigDecimal creditBalance(BigDecimal amountToAdd) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal creditBalance(Account receiveAccount, BigDecimal amountToAdd) {
+		// Updates database
+		String sqlAddMoney = "UPDATE accounts SET balance = ? WHERE user_id = ?";
+		jdbcTemplate.update(sqlAddMoney, receiveAccount.getAccountBalance().add(amountToAdd),
+				receiveAccount.getUserId());
+		// Updates Java object
+		receiveAccount.setAccountBalance(receiveAccount.getAccountBalance().add(amountToAdd));
+		return receiveAccount.getAccountBalance();
 	}
 
 	@Override
-	public BigDecimal deductBalance(BigDecimal amountToSubtract) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal deductBalance(Account payAccount, BigDecimal amountToSubtract) {
+		if (payAccount.hasEnoughMoney(amountToSubtract)) {
+			// Updates database
+			String sqlDeductMoney = "UPDATE accounts SET balance = ? WHERE user_id = ?";
+			jdbcTemplate.update(sqlDeductMoney, payAccount.getAccountBalance().subtract(amountToSubtract),
+					payAccount.getUserId());
+			// Updates Java object
+			payAccount.setAccountBalance(payAccount.getAccountBalance().subtract(amountToSubtract));
+		}
+		return payAccount.getAccountBalance();
 	}
-	
+
 	@Override
 	public Account findAccountByUserId(long userId) {
 		Account account = null;

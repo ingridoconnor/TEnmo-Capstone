@@ -25,6 +25,7 @@ public class TransferSqlDAO implements TransferDAO {
 
 	}
 
+	// Should this be part of AccountDAO instead? TransferDAO should only be talking to the transfers table
 	@Override
 	public void send(long senderId, long receiverId, BigDecimal amount) {
 		// Take money from sender
@@ -39,54 +40,46 @@ public class TransferSqlDAO implements TransferDAO {
 		// Stick results into transfer
 	}
 
-	// Updates accounts and takes out money
-	private boolean deductFromAccount(Account payAccount, BigDecimal amount) {
-		if (payAccount.hasEnoughMoney(amount)) {
-			// TODO Do we need to program for users with multiple accounts?
-			String sqlDeductMoney = "UPDATE accounts SET balance = ? WHERE user_id = ?";
-			return (jdbcTemplate.update(sqlDeductMoney, payAccount.getAccountBalance().subtract(amount),
-					payAccount.getUserId()) == 1);
-		}
-		return false;
-	}
-
-	// Updates accounts and puts in money
-	private boolean addToAccount(Account receiveAccount, BigDecimal amount) {
-		String sqlAddMoney = "UPDATE accounts SET balance = ? WHERE user_id = ?";
-		return (jdbcTemplate.update(sqlAddMoney, receiveAccount.getAccountBalance().add(amount),
-				receiveAccount.getUserId()) == 1);
-	}
-
-	// Creates new row in transfers table
-	private boolean addedRowToTransfer(Transfer transfer) {
-
+	//Refactor: Separate method for retrieving transfer_type_id
+	private int getTransferTypeId(Transfer transfer) {
 		String sqlGetTransferTypeId = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
 		SqlRowSet transferTypeResult = jdbcTemplate.queryForRowSet(sqlGetTransferTypeId, transfer.getTransferType());
 		int transferTypeId = 0;
 		if (transferTypeResult.next()) {
 			transferTypeId = transferTypeResult.getInt("transfer_type_id");
-
+			
 		}
+		return transferTypeId;
+	}
+	
+	// Refactor: create separate method for retrieving transfer_status_id
+	private int getTransferStatusId(Transfer transfer) {
 		String sqlGetTransferStatusId = "SELECT transfer_Status_id FROM transfer_statuses WHERE transfer_status_desc = ?";
 		SqlRowSet transferStatusResult = jdbcTemplate.queryForRowSet(sqlGetTransferStatusId,
 				transfer.getTransferStatus());
 		int transferStatusId = 0;
 		if (transferStatusResult.next()) {
 			transferStatusId = transferStatusResult.getInt("transfer_status_id");
-
+			
 		}
-		if (transferStatusId > 0 && transferTypeId > 0) {
+		return transferStatusId;
+	}
+	
+	// Creates new row in transfers table
+	public boolean addRowToTransfer(Transfer transfer) {
+		// We successfully retrieve both the status and type IDs
+		int statusId = getTransferStatusId(transfer);
+		int typeId = getTransferTypeId(transfer);
+		if (statusId > 0 && typeId > 0) {
 			String sqlAddRowToTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
 					+ "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
-			SqlRowSet transferIdResult = jdbcTemplate.queryForRowSet(sqlAddRowToTransfer, transferTypeId,
-					transferStatusId, transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
+			SqlRowSet transferIdResult = jdbcTemplate.queryForRowSet(sqlAddRowToTransfer, typeId,
+					statusId, transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
 			if (transferIdResult.next()) {
 				transfer.setTransferId(transferIdResult.getLong("transfer_id"));
 				return true;
-
 			}
 		}
-
 		return false;
 
 	}

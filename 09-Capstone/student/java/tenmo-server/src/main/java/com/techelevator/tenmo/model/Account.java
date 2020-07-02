@@ -46,7 +46,13 @@ public class Account {
 		this.accountBalance = accountBalance;
 	}
 
-	public boolean equals(Account account) {
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) 
+			return true;
+		if (o == null || this.getClass() != o.getClass())
+			return false;
+		Account account = (Account)o;
 		return (this.getUserId() == account.getUserId() && this.getAccountId() == account.getAccountId()
 				&& this.getAccountBalance().compareTo(account.getAccountBalance()) == 0);
 	}

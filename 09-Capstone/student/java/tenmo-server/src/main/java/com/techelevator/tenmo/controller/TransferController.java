@@ -32,13 +32,13 @@ public class TransferController {
 		return userDao.findAll();
 		
 	}
-	@RequestMapping(path = "/send/{id}", method = RequestMethod.POST)
-	public Transfer sendMoney(Principal principal) {
-		//get our own id to deduct from our balance
-		String userName = principal.getName();
-		long userId = userDao.findIdByUsername(userName);
-		//get recip id
-		Account account = accountDao.findAccountByUserId(userId);
-	}
+//	@RequestMapping(path = "/send/{id}", method = RequestMethod.POST)
+//	public Transfer sendMoney(Principal principal) {
+//		//get our own id to deduct from our balance
+//		String userName = principal.getName();
+//		long userId = userDao.findIdByUsername(userName);
+//		//get recip id
+////		Account account = accountDao.findAccountByUserId(userId);
+//	}
 
 }

@@ -8,9 +8,9 @@ public interface AccountDAO {
 	
 	BigDecimal viewCurrentBalance(long userId);
 	
-	BigDecimal creditBalance(BigDecimal amountToAdd);
+	BigDecimal creditBalance(Account account, BigDecimal amountToAdd);
 	
-	BigDecimal deductBalance(BigDecimal amountToSubtract);
+	BigDecimal deductBalance(Account account, BigDecimal amountToSubtract);
 	
 	Account findAccountByUserId(long userId);
 	
