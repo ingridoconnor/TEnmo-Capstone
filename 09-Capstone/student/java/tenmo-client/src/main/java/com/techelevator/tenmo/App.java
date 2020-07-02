@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -101,7 +102,17 @@ public class App {
 	}
 
 	private void sendBucks() {
-		int sendToChoice = console.getUserInputInteger(accountService.getAllUsers(currentUser).toString());
+		// Makes menu
+		String userMenu = String.format("\nUsers\n%-10s%-30s", "ID", "Name");
+		User[] users = accountService.getAllUsers(currentUser);
+		for (User user : users) {
+			userMenu = String.format(userMenu + "\n%-10d%-30s", user.getId(), user.getUsername());
+		}
+		userMenu += "\n\nEnter ID of user you are sending to (0 to cancel)";
+		
+		// Gets user choice
+		int sendToChoice = console.getUserInputInteger(userMenu);
+		if (sendToChoice == 0) return;
 		BigDecimal amount = BigDecimal.ZERO;
 		try {
 			amount = new BigDecimal(console.getUserInput("Enter amount of TEBucks"));
@@ -110,11 +121,13 @@ public class App {
 		}
 		
 		// If the amount being sent is positive
+		// POST transfer object to server
+		// TODO not working yet
 		if (amount.compareTo(BigDecimal.ZERO) == 1) {
 			Transfer sendTransfer = new Transfer(TRANSFER_TYPE_SEND, TRANSFER_STATUS_APPROVED,
 					currentUser.getUser().getId(), (long) sendToChoice, amount);
+			accountService.sendTransfer(currentUser, sendTransfer);
 		}
-		// POST transfer object to server
 
 		// Server sends confirmation note?
 
