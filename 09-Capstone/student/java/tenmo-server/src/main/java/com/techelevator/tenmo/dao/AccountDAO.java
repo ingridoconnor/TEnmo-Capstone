@@ -14,5 +14,6 @@ public interface AccountDAO {
 	
 	Account findAccountByUserId(long userId);
 	
+	
 
 }

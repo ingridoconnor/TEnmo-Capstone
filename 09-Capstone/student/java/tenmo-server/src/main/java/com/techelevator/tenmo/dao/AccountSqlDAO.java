@@ -62,6 +62,16 @@ public class AccountSqlDAO implements AccountDAO {
 		}
 		return account;
 	}
+//	@Override
+//	public Account findAccountByUserName(String name) {
+//		Account account = null;
+//		String sql = "SELECT * FROM accounts WHERE username = ?";
+//		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, userId);
+//		if (result.next()) {
+//			account = mapRowToAccount(result);
+//		}
+//		return account;
+//	}
 
 	private Account mapRowToAccount(SqlRowSet results) {
 		Account account = new Account();

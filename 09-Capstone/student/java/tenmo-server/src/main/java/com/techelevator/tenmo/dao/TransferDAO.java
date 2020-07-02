@@ -2,6 +2,8 @@ package com.techelevator.tenmo.dao;
 
 import java.math.BigDecimal;
 
+import com.techelevator.tenmo.model.Transfer;
+
 public interface TransferDAO {
 	
 	/**
@@ -21,5 +23,7 @@ public interface TransferDAO {
 	 * @param amount
 	 */
 	void send(long senderId, long receiverId, BigDecimal amount);
+
+	boolean addRowToTransfer(Transfer transfer);
 
 }

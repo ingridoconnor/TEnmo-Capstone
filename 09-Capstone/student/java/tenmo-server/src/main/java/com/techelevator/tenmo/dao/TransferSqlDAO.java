@@ -66,6 +66,7 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	// Creates new row in transfers table
+	@Override
 	public boolean addRowToTransfer(Transfer transfer) {
 		// We successfully retrieve both the status and type IDs
 		int statusId = getTransferStatusId(transfer);

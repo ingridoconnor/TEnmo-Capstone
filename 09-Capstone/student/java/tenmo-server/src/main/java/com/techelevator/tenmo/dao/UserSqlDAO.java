@@ -78,6 +78,16 @@ public class UserSqlDAO implements UserDAO {
 
         return userCreated && accountCreated;
     }
+   @Override
+    public User findUserById(long id) {
+    	User user = new User();
+    	String sql = "SELECT * FROM users WHERE user_id = ?";
+    	SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id);
+    	if(result.next()) {
+    		user = mapRowToUser(result);
+    	}
+    	return user;
+    }
 
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
