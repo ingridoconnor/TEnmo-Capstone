@@ -92,8 +92,21 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-
+		Transfer[] pastTransfers = accountService.getTransferHistoryClient(currentUser);
+		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-20s", "ID", "From/To", "Amount");
+		for(Transfer transfer: pastTransfers) {
+			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId()) ? "To: " + transfer.getAccountToId() : "From: " + transfer.getAccountFromId();
+			transferMenu  = String.format(transferMenu + "\n%-10d%-30s$%20.2f", transfer.getTransferId(), fromTo, transfer.getAmount());
+		}
+		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel) ";
+		int sendToChoice = console.getUserInputInteger(transferMenu);
+		if (sendToChoice == 0) return;
+		
+		try {
+			
+		} catch (NumberFormatException ex) {
+			System.out.println("Invalid money amount");
+		}
 	}
 
 	private void viewPendingRequests() {

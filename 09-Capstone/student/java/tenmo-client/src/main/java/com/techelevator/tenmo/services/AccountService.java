@@ -58,6 +58,17 @@ public class AccountService {
         }
 		return users;
 	}
+	public Transfer[] getTransferHistoryClient(AuthenticatedUser user) {
+		AUTH_TOKEN = user.getToken();
+		Transfer[] transfers = null;
+		try {
+			transfers = restTemplate.exchange(BASE_URL + "account/transfers/history", HttpMethod.GET, makeAuthEntity(), 
+					Transfer[].class).getBody();
+		}  catch (RestClientResponseException ex) {
+            // TODO write an AccountServiceException?
+        }
+		return transfers;
+	}
 	
 	private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
 		HttpHeaders headers = new HttpHeaders();

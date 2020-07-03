@@ -54,7 +54,7 @@ public class AccountController {
 			transferDao.addRowToTransfer(transfer);
 		} 
 	}
-	@RequestMapping(path = "/transfers/approved", method = RequestMethod.GET)
+	@RequestMapping(path = "/transfers/history", method = RequestMethod.GET)
 	public Transfer[] getTransferHistory(Principal principal) {
 		User user = userDao.findByUsername(principal.getName());
 		Account account = accountDao.findAccountByUserId(user.getId());

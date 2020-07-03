@@ -1,7 +1,8 @@
 package com.techelevator.tenmo.daotests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 
@@ -88,7 +89,7 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		addFakeAccountsToAccountTable(accountTwo);
 		
 		transferOne = new Transfer(TYPE_SEND, "Approved", accountOne.getAccountId(), accountTwo.getAccountId(), BigDecimal.TEN);
-		transferTwo = new Transfer(TYPE_SEND, "Approved", accountTwo.getAccountId(), accountOne.getAccountId(), BigDecimal.ONE);
+		transferTwo = new Transfer(TYPE_SEND, "Approved", 0, accountOne.getAccountId(), BigDecimal.ONE);
 		
 		// Finally we can start making a fake transfer that works
 		// This was our goal all along, but we couldn't do it without potentially messing up our tables
@@ -127,7 +128,10 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 	@Test
 	public void transfer_adds_row_to_transfer_table() {
 		assertEquals(0, transferDao.getAllTransfers(accountOne).size());
+		assertTrue(transferDao.addRowToTransfer(transferOne));
+		assertEquals(1, transferDao.getAllTransfers(accountOne).size());
 		
 	}
+	
 
 }
