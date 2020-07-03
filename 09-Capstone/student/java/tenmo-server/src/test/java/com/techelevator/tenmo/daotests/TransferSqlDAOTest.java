@@ -1,16 +1,19 @@
 package com.techelevator.tenmo.daotests;
 
+import static org.junit.Assert.assertNull;
+
 import java.math.BigDecimal;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 
 class TransferSqlDAOTest extends DAOIntegrationTest {
@@ -19,8 +22,12 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 	private JdbcTemplate jdbcTemplate;
 	private Account accountOne;
 	private Account accountTwo;
+	private Transfer transferOne;
+	private Transfer transferTwo;
 	private User badGuy;
 	private User badGuy2;
+	private static final String TYPE_SEND = "Send";
+	private static final String TYPE_REQUEST = "Request";
 	private static final String DEFAULT_USER_NAME = "badGuy";
 	private static final String DEFAULT_USER_NAME_2 = "badGuy2";
 	private static final String DEFAULT_PASSWORD = "frowny";
@@ -73,8 +80,13 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 		accountTwo = new Account();
 		accountOne.setAccountBalance(TEST_BALANCE);
 		accountTwo.setAccountBalance(TEST_BALANCE);
-		// TODO Now all that needs to happen is to put these into the accounts table so we can give these fake accounts
-		// working account_id's, like how addDummyToUserTable(User user) works
+		accountOne.setUserId(badGuy.getId());
+		accountTwo.setUserId(badGuy2.getId());
+		addFakeAccountsToAccountTable(accountOne);
+		addFakeAccountsToAccountTable(accountTwo);
+		
+		transferOne = new Transfer(TYPE_SEND, "Approved", accountOne.getAccountId(), accountTwo.getAccountId(), BigDecimal.TEN);
+		transferTwo = new Transfer(TYPE_SEND, "Approved", accountTwo.getAccountId(), accountOne.getAccountId(), BigDecimal.ONE);
 		
 		// Finally we can start making a fake transfer that works
 		// This was our goal all along, but we couldn't do it without potentially messing up our tables
@@ -87,6 +99,14 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 	    if (result.next())
 	        dummy.setId(result.getLong("user_id"));
 	}
+	private void addFakeAccountsToAccountTable(Account account) {
+		SqlRowSet result = jdbcTemplate.queryForRowSet("INSERT INTO accounts (user_id, balance) VALUES (?, ?) RETURNING account_id",
+				account.getUserId(), account.getAccountBalance());
+		if(result.next())
+			account.setAccountId(result.getLong("account_id"));
+	}
+	
+	
 
 	// Now for the tests
 	// TransferSqlDAO has 2 methods so far that can be tested:
@@ -101,7 +121,7 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 	// 						b) If the transfer is invalid, the size of the return list should remain unchanged
 	@Test
 	public void transfer_adds_row_to_transfer_table() {
-		int sizeBefore = transferDao.getAllTransfers(accountOne).size();
+		assertNull(transferDao.getAllTransfers(accountOne));
 		
 	}
 
