@@ -1,9 +1,11 @@
 package com.techelevator.tenmo.daotests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,7 +18,7 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 
-class TransferSqlDAOTest extends DAOIntegrationTest {
+public class TransferSqlDAOTest extends DAOIntegrationTest {
 	
 	private TransferSqlDAO transferDao;
 	private JdbcTemplate jdbcTemplate;
@@ -71,7 +73,7 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 		badGuy.setUsername(DEFAULT_USER_NAME);
 		badGuy2.setUsername(DEFAULT_USER_NAME_2);
 		badGuy.setPassword(DEFAULT_PASSWORD);
-		badGuy.setPassword(DEFAULT_PASSWORD_2);
+		badGuy2.setPassword(DEFAULT_PASSWORD_2);
 		addDummyToUserTable(badGuy);
 		addDummyToUserTable(badGuy2);
 		
@@ -106,7 +108,10 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 			account.setAccountId(result.getLong("account_id"));
 	}
 	
-	
+	@After
+	public void tearDown() throws Exception {
+		rollback();
+	}
 
 	// Now for the tests
 	// TransferSqlDAO has 2 methods so far that can be tested:
@@ -121,7 +126,7 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 	// 						b) If the transfer is invalid, the size of the return list should remain unchanged
 	@Test
 	public void transfer_adds_row_to_transfer_table() {
-		assertNull(transferDao.getAllTransfers(accountOne));
+		assertEquals(0, transferDao.getAllTransfers(accountOne).size());
 		
 	}
 
