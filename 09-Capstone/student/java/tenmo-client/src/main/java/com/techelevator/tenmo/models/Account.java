@@ -2,6 +2,7 @@ package com.techelevator.tenmo.models;
 
 import java.math.BigDecimal;
 
+// Client
 public class Account {
 	private long accountId;
 	private long userId;

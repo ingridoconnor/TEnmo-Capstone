@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
 
+// Server side
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
