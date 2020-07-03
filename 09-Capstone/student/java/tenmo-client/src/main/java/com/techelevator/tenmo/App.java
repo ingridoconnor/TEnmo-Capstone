@@ -99,8 +99,24 @@ public class App {
 			transferMenu  = String.format(transferMenu + "\n%-10d%-30s$%7.2f", transfer.getTransferId(), fromTo, transfer.getAmount());
 		}
 		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel) ";
-		int sendToChoice = console.getUserInputInteger(transferMenu);
-		if (sendToChoice == 0) return;
+		int choice = console.getUserInputInteger(transferMenu);
+		if (choice == 0) 
+			return;
+		else {
+			for(Transfer transfer: pastTransfers) {
+				if(transfer.getTransferId() == choice) {
+					System.out.println("Transfer Details: " );
+					System.out.println("ID: " + transfer.getTransferId());
+					System.out.println("From: " + transfer.getAccountFromName());
+					System.out.println("To: " + transfer.getAccountToName());
+					System.out.println("Type: " + transfer.getTransferStatus());
+					System.out.println("Amount: $" + transfer.getAmount());
+				}
+			}
+			
+		}
+			
+		
 		
 		try {
 			
