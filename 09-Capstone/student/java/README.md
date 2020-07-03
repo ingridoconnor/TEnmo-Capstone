@@ -21,7 +21,7 @@ You should attempt to complete all of the following required use cases.
    4. The sender's account balance is decreased by the amount of the transfer.
    5. I can't send more TE Bucks than I have in my account.
    6. A Sending Transfer has an initial status of "approve."
-5. As an authenticated user of the system, I need to be able to see transfers I have sent or received.
+5.**[COMPLETE]**  As an authenticated user of the system, I need to be able to see transfers I have sent or received.
 6. As an authenticated user of the system, I need to be able to retrieve the details of any transfer based upon the transfer ID.
 
 ### Optional Use Cases
