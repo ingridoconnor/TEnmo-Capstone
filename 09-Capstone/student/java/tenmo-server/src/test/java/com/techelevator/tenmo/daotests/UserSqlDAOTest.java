@@ -3,6 +3,8 @@ package com.techelevator.tenmo.daotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.tenmo.dao.UserSqlDAO;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 
 public class UserSqlDAOTest extends DAOIntegrationTest {
@@ -88,5 +91,16 @@ public class UserSqlDAOTest extends DAOIntegrationTest {
 		int sizeBefore = userDao.findAll().size();
 		assertTrue(userDao.create(SECOND_DUMMY_USER_NAME, DEFAULT_PASSWORD));
 		assertEquals(sizeBefore + 1, userDao.findAll().size());
+	}
+	
+	@Test
+	public void can_find_username_by_account_id() {
+		// Make a dummy account for dummy user
+		Account dummyAccount = new Account();
+		dummyAccount.setUserId(defaultDummy.getId());
+		dummyAccount.setAccountBalance(new BigDecimal("500.00"));
+		String sql = "INSERT INTO accounts (user_id, balance) VALUES (?, ?) RETURNING account_id";
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, dummyAccount.getUserId(), dummyAccount.getAccountBalance());
+		if(result.next())
 	}
 }

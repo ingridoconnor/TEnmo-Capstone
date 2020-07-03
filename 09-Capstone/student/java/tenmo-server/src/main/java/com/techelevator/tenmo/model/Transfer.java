@@ -2,30 +2,39 @@ package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
 
+// Server-side Transfer
+
 public class Transfer {
 	private String transferType;
 	private String transferStatus;
 	private long accountFromId;
+	private String accountFromName;
 	private long accountToId;
+	private String accountToName;
 	private BigDecimal amount;
 
-	public Transfer(String transferType, String transferStatus, long accountFromId, long accountToId, 
-			BigDecimal amount, long transferId) {
+	public Transfer(String transferType, String transferStatus, long accountFromId, String accountFromName,
+			long accountToId, String accountToName, BigDecimal amount, long transferId) {
 
 		this.transferType = transferType;
 		this.transferStatus = transferStatus;
 		this.accountFromId = accountFromId;
+		this.accountFromName = accountFromName;
 		this.accountToId = accountToId;
+		this.accountToName = accountToName;
 		this.amount = amount;
 		this.transferId = transferId;
 	}
-	public Transfer(String transferType, String transferStatus, long accountFromId, long accountToId,
-			BigDecimal amount) {
+	
+	public Transfer(String transferType, String transferStatus, long accountFromId, String accountFromName,
+			long accountToId, String accountToName,	BigDecimal amount) {
 
 		this.transferType = transferType;
 		this.transferStatus = transferStatus;
 		this.accountFromId = accountFromId;
+		this.accountFromName = accountFromName;
 		this.accountToId = accountToId;
+		this.accountToName = accountToName;
 		this.amount = amount;
 		
 	}
@@ -82,6 +91,19 @@ public class Transfer {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	
+	public String getAccountFromName() {
+		return accountFromName;
+	}
+	public void setAccountFromName(String accountFromName) {
+		this.accountFromName = accountFromName;
+	}
+	public String getAccountToName() {
+		return accountToName;
+	}
+	public void setAccountToName(String accountToName) {
+		this.accountToName = accountToName;
 	}
 
 }
