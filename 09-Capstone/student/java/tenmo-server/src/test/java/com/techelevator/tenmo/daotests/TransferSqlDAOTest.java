@@ -1,7 +1,6 @@
 package com.techelevator.tenmo.daotests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -15,6 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.tenmo.dao.TransferSqlDAO;
+import com.techelevator.tenmo.dao.UserDAO;
+import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
@@ -22,6 +23,7 @@ import com.techelevator.tenmo.model.User;
 public class TransferSqlDAOTest extends DAOIntegrationTest {
 	
 	private TransferSqlDAO transferDao;
+	private UserDAO userDao;
 	private JdbcTemplate jdbcTemplate;
 	private Account accountOne;
 	private Account accountTwo;
@@ -50,7 +52,8 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		// Initialize JDBC and DAO stuff here so that everything starts fresh with every test, and each test is 
 		// independent of the others.
 		jdbcTemplate = new JdbcTemplate(getDataSource());
-		transferDao = new TransferSqlDAO(jdbcTemplate);
+		userDao = new UserSqlDAO(jdbcTemplate);
+		transferDao = new TransferSqlDAO(jdbcTemplate, userDao);
 		
 		// Apologies for communication lapses and typos due to hunger lol
 		// Pardon the wall of words also due to hunger
@@ -88,8 +91,10 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		addFakeAccountsToAccountTable(accountOne);
 		addFakeAccountsToAccountTable(accountTwo);
 		
-		transferOne = new Transfer(TYPE_SEND, "Approved", accountOne.getAccountId(), accountTwo.getAccountId(), BigDecimal.TEN);
-		transferTwo = new Transfer(TYPE_SEND, "Approved", 0, accountOne.getAccountId(), BigDecimal.ONE);
+		transferOne = new Transfer(TYPE_SEND, "Approved", accountOne.getAccountId(), badGuy.getUsername(),
+				accountTwo.getAccountId(), badGuy2.getUsername(), BigDecimal.TEN);
+		transferTwo = new Transfer(TYPE_SEND, "Approved", 0, "Troll", accountOne.getAccountId(), badGuy.getUsername(),
+				BigDecimal.ONE);
 		
 		// Finally we can start making a fake transfer that works
 		// This was our goal all along, but we couldn't do it without potentially messing up our tables

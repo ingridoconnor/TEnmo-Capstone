@@ -13,23 +13,22 @@ import com.techelevator.tenmo.model.Transfer;
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
-	
+	private UserDAO userDao;
 
-	public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
+	public TransferSqlDAO(JdbcTemplate jdbcTemplate, UserDAO userDao) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.userDao = userDao;
 		
 	}
 	@Override
 	public List<Transfer> getAllTransfers(Account account){
 		List<Transfer> transfers = new ArrayList<>();
 		String sql = "SELECT * FROM transfers AS t INNER JOIN transfer_statuses AS ts ON t.transfer_status_id = ts.transfer_status_id INNER JOIN transfer_types AS tt ON t.transfer_type_id = tt.transfer_type_id WHERE t.account_from = ? OR t.account_to = ?";
-
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account.getAccountId(), account.getAccountId());
         while(results.next()) {
             Transfer transfer = mapRowToTransfer(results);
             transfers.add(transfer);
         }
-
         return transfers;
     }
 	
@@ -89,6 +88,8 @@ public class TransferSqlDAO implements TransferDAO {
 		transfer.setTransferId(results.getLong("transfer_id"));
 		transfer.setTransferStatus(results.getString("transfer_status_desc"));
 		transfer.setTransferType(results.getString("transfer_type_desc"));
+		transfer.setAccountFromName(userDao.findUsernameByAccountId(results.getLong("account_from")));
+		transfer.setAccountToName(userDao.findUsernameByAccountId(results.getLong("account_to")));
 		return transfer;
 	}
 

@@ -102,5 +102,9 @@ public class UserSqlDAOTest extends DAOIntegrationTest {
 		String sql = "INSERT INTO accounts (user_id, balance) VALUES (?, ?) RETURNING account_id";
 		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, dummyAccount.getUserId(), dummyAccount.getAccountBalance());
 		if(result.next())
+			dummyAccount.setAccountId(result.getLong("account_id"));
+		
+		// Now let's see if we can look up the username
+		assertEquals(DEFAULT_USER_NAME, userDao.findUsernameByAccountId(dummyAccount.getAccountId()));
 	}
 }

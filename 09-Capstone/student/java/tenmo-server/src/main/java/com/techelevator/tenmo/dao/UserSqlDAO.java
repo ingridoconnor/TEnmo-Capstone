@@ -27,10 +27,10 @@ public class UserSqlDAO implements UserDAO {
     @Override
     public String findUsernameByAccountId(long accountId) {
     	String username = "";
-    	String sql = "SELECT u.username FROM users AS u INNER JOIN accounts AS a ON u.user_id = a.user_id WHERE u.user_id = ?";
+    	String sql = "SELECT username FROM users AS u INNER JOIN accounts AS a ON u.user_id = a.user_id WHERE a.account_id = ?";
     	SqlRowSet result = jdbcTemplate.queryForRowSet(sql, accountId);
     	if(result.next())
-    		username = result.getString("u.username");
+    		username = result.getString("username");
     	return username;
     }
     
