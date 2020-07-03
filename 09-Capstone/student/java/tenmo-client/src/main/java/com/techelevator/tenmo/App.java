@@ -94,34 +94,39 @@ public class App {
 	private void viewTransferHistory() {
 		Transfer[] pastTransfers = accountService.getTransferHistoryClient(currentUser);
 		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-7s", "ID", "From/To", "Amount");
-		for(Transfer transfer: pastTransfers) {
-			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId()) ? "To: " + transfer.getAccountToName() : "From: " + transfer.getAccountFromName();
-			transferMenu  = String.format(transferMenu + "\n%-10d%-30s$%7.2f", transfer.getTransferId(), fromTo, transfer.getAmount());
+		for (Transfer transfer : pastTransfers) {
+			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
+					? "To: " + transfer.getAccountToName()
+					: "From: " + transfer.getAccountFromName();
+			transferMenu = String.format(transferMenu + "\n%-10d%-30s$%7.2f", transfer.getTransferId(), fromTo,
+					transfer.getAmount());
 		}
 		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel) ";
-		int choice = console.getUserInputInteger(transferMenu);
-		if (choice == 0) 
+		int choice = 0;
+		try {
+			choice = console.getUserInputInteger(transferMenu);
+
+		} catch (NumberFormatException ex) {
+			System.out.println("Please enter a transfer ID number or 0 to cancel.");
+		}
+		boolean found = false;
+		if (choice == 0)
 			return;
 		else {
-			for(Transfer transfer: pastTransfers) {
-				if(transfer.getTransferId() == choice) {
-					System.out.println("Transfer Details: " );
+			for (Transfer transfer : pastTransfers) {
+				if (transfer.getTransferId() == choice) {
+					System.out.println("Transfer Details: ");
 					System.out.println("ID: " + transfer.getTransferId());
 					System.out.println("From: " + transfer.getAccountFromName());
 					System.out.println("To: " + transfer.getAccountToName());
 					System.out.println("Type: " + transfer.getTransferStatus());
 					System.out.println("Amount: $" + transfer.getAmount());
+					found = true;
 				}
 			}
-			
-		}
-			
-		
-		
-		try {
-			
-		} catch (NumberFormatException ex) {
-			System.out.println("Invalid money amount");
+			if (!found) {
+				System.out.println("Please choose a valid transfer ID or 0 to cancel.");
+			}
 		}
 	}
 
@@ -138,17 +143,18 @@ public class App {
 			userMenu = String.format(userMenu + "\n%-10d%-30s", user.getId(), user.getUsername());
 		}
 		userMenu += "\n\nEnter ID of user you are sending to (0 to cancel)";
-		
+
 		// Gets user choice
 		int sendToChoice = console.getUserInputInteger(userMenu);
-		if (sendToChoice == 0) return;
+		if (sendToChoice == 0)
+			return;
 		BigDecimal amount = BigDecimal.ZERO;
 		try {
 			amount = new BigDecimal(console.getUserInput("Enter amount of TEBucks"));
 		} catch (NumberFormatException ex) {
 			System.out.println("Invalid money amount");
 		}
-		
+
 		// If the amount being sent is positive
 		// POST transfer object to server
 		if (amount.compareTo(BigDecimal.ZERO) == 1) {
