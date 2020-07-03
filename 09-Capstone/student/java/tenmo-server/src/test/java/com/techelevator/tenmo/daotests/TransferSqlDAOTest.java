@@ -37,7 +37,8 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 	}
 	@Before
 	public void setup() throws Exception {
-		// Initialize JDBC and DAO stuff here so that everything starts fresh with every test, and each test is independent of the others.
+		// Initialize JDBC and DAO stuff here so that everything starts fresh with every test, and each test is 
+		// independent of the others.
 		jdbcTemplate = new JdbcTemplate(getDataSource());
 		transferDao = new TransferSqlDAO(jdbcTemplate);
 		
@@ -47,7 +48,8 @@ class TransferSqlDAOTest extends DAOIntegrationTest {
 		// Create fake users in Java and put them into our database table "users"
 		// Why? We really want to actually make fake transfers to test this DAO 
 		// But the table "transfers" is being extra and won't let any of its columns be null
-		// (see DbVis > TEnmo > tenmo > public > TABLE > transfers > Columns > NULLABLE where everything is 0, which I THINK means "false")
+		// (see DbVis > TEnmo > tenmo > public > TABLE > transfers > Columns > NULLABLE where everything is 0, 
+		// which I THINK means "false")
 		
 		// So that means "account_from" and "account_to" have to have actual, legit account ids
 		// BUT the accounts table is ALSO being extra and won't let any of its columns accept null either
