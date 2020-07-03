@@ -28,7 +28,7 @@ You should attempt to complete all of the following required use cases.
 If you complete all of the required use cases and are looking for additional challenge, complete as many of the following optional use cases as you can.
 
 7. As an authenticated user of the system, I need to be able to *request* a transfer of a specific amount of TE Bucks from another registered user.
-   1. I should be able to choose from a list of users to request TE Bucks from. **[Same as Send menu]**
+   1. I should be able to choose from a list of users to request TE Bucks from. **[COMPLETE]**
    2. A transfer includes the User IDs of the from and to users and the amount of TE Bucks. **[Make sure to and from match right users]**
    3. A Request Transfer has an initial status of "pending." **[Change from Approved to Pending]**
    4. No account balance changes until the request is approved. **[DO NOT update balance until status.equals("Approved")]**
