@@ -46,6 +46,14 @@ public class AccountService {
             // TODO write an AccountServiceException?
         }
 	}
+	public void requestTransfer(AuthenticatedUser user, Transfer transfer) {
+		AUTH_TOKEN = user.getToken();
+		try {
+			restTemplate.exchange(BASE_URL + "account/requestbucks", HttpMethod.PUT, makeTransferEntity(transfer), Transfer.class);
+		} catch (RestClientResponseException ex) {
+            // TODO write an AccountServiceException?
+        }
+	}
 	
 	public User[] getAllUsers(AuthenticatedUser user) {
 		AUTH_TOKEN = user.getToken();

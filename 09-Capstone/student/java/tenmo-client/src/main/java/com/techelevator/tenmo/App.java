@@ -167,7 +167,31 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+		// Makes menu
+		String userMenu = String.format("\nUsers\n%-10s%-30s", "ID", "Name");
+		User[] users = accountService.getAllUsers(currentUser);
+		for (User user : users) {
+			userMenu = String.format(userMenu + "\n%-10d%-30s", user.getId(), user.getUsername());
+		}
+		userMenu += "\n\nEnter ID of user you are requesting from (0 to cancel)";
+		// Gets user choice
+		int sendToChoice = console.getUserInputInteger(userMenu);
+		if (sendToChoice == 0)
+			return;
+		BigDecimal amount = BigDecimal.ZERO;
+		try {
+			amount = new BigDecimal(console.getUserInput("Enter amount of TEBucks"));
+		} catch (NumberFormatException ex) {
+			System.out.println("Invalid money amount");
+		}
+		// If the amount being sent is positive
+				// POST transfer object to server
+				if (amount.compareTo(BigDecimal.ZERO) == 1) {
+					Transfer sendTransfer = new Transfer(TRANSFER_TYPE_REQUEST, TRANSFER_STATUS_PENDING,
+							currentUser.getUser().getId(), (long) sendToChoice, amount);
+					accountService.requestTransfer(currentUser, sendTransfer);
+					viewCurrentBalance();
+				}
 
 	}
 
