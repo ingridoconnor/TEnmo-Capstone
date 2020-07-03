@@ -93,13 +93,14 @@ public class App {
 
 	private void viewTransferHistory() {
 		Transfer[] pastTransfers = accountService.getTransferHistoryClient(currentUser);
-		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-7s", "ID", "From/To", "Amount");
+		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-10s%-7s", "ID", "From/To", "Status",
+				"Amount");
 		for (Transfer transfer : pastTransfers) {
 			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
 					? "To: " + transfer.getAccountToName()
 					: "From: " + transfer.getAccountFromName();
-			transferMenu = String.format(transferMenu + "\n%-10d%-30s$%7.2f", transfer.getTransferId(), fromTo,
-					transfer.getAmount());
+			transferMenu = String.format(transferMenu + "\n%-10d%-30s%-10s$%7.2f", transfer.getTransferId(), fromTo,
+					transfer.getTransferStatus(), transfer.getAmount());
 		}
 		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel) ";
 		int choice = 0;
@@ -119,7 +120,8 @@ public class App {
 					System.out.println("ID: " + transfer.getTransferId());
 					System.out.println("From: " + transfer.getAccountFromName());
 					System.out.println("To: " + transfer.getAccountToName());
-					System.out.println("Type: " + transfer.getTransferStatus());
+					System.out.println("Type: " + transfer.getTransferType());
+					System.out.println("Status: " + transfer.getTransferStatus());
 					System.out.println("Amount: $" + transfer.getAmount());
 					found = true;
 				}
@@ -131,8 +133,41 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+		Transfer[] pending = accountService.getTransferHistoryClient(currentUser);
+		String pendingTransferMenu = String.format("\n Pending Transfers\n%-10s%-30s%-7s", "ID", "From/To",
+				"Amount");
+		for (Transfer transfer : pending) {
+			if (transfer.getTransferStatus().equalsIgnoreCase(TRANSFER_STATUS_PENDING)) {
+				String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
+						? "To: " + transfer.getAccountToName()
+						: "From: " + transfer.getAccountFromName();
+				pendingTransferMenu = String.format(pendingTransferMenu + "\n%-10d%-30s$%7.2f",
+						transfer.getTransferId(), fromTo, transfer.getAmount());
+			}
 
+		}
+		pendingTransferMenu += "\nPlease enter transfer ID to approve/reject (0 to cancel) ";
+		int userChoice = 0;
+		try {
+			userChoice = console.getUserInputInteger(pendingTransferMenu);
+
+		} catch (NumberFormatException ex) {
+			System.out.println("Please enter a transfer ID number or 0 to cancel.");
+		}
+		boolean wasFound = false;
+		if (userChoice == 0)
+			return;
+		else {
+			for (Transfer transfer : pending) {
+				if (transfer.getTransferId() == userChoice) {
+					System.out.println(": ");
+					wasFound = true;
+				}
+			}
+			if (!wasFound) {
+				System.out.println("Please choose a valid transfer ID ");
+			}
+		}
 	}
 
 	private void sendBucks() {
@@ -185,13 +220,13 @@ public class App {
 			System.out.println("Invalid money amount");
 		}
 		// If the amount being sent is positive
-				// POST transfer object to server
-				if (amount.compareTo(BigDecimal.ZERO) == 1) {
-					Transfer sendTransfer = new Transfer(TRANSFER_TYPE_REQUEST, TRANSFER_STATUS_PENDING,
-							currentUser.getUser().getId(), (long) sendToChoice, amount);
-					accountService.requestTransfer(currentUser, sendTransfer);
-					viewCurrentBalance();
-				}
+		// POST transfer object to server
+		if (amount.compareTo(BigDecimal.ZERO) == 1) {
+			Transfer sendTransfer = new Transfer(TRANSFER_TYPE_REQUEST, TRANSFER_STATUS_PENDING,
+					currentUser.getUser().getId(), (long) sendToChoice, amount);
+			accountService.requestTransfer(currentUser, sendTransfer);
+			viewCurrentBalance();
+		}
 
 	}
 

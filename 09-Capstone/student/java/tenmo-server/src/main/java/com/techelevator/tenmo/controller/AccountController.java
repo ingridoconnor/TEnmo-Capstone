@@ -52,19 +52,22 @@ public class AccountController {
 			accountDao.deductBalance(takeFrom, transfer.getAmount());
 			accountDao.creditBalance(giveTo, transfer.getAmount());
 			transferDao.addRowToTransfer(transfer);
-		} 
+		}
 	}
+
 	@RequestMapping(path = "/requestbucks", method = RequestMethod.PUT)
 	public void requestBucks(@RequestBody Transfer transfer) {
 		Account requestFrom = accountDao.findAccountByUserId(transfer.getAccountToId());
 		Account me = accountDao.findAccountByUserId(transfer.getAccountFromId());
-		if (requestFrom.hasEnoughMoney(transfer.getAmount()) && transfer.getTransferStatus().equalsIgnoreCase("Approved")) {
+		if (requestFrom.hasEnoughMoney(transfer.getAmount())) {
+			transferDao.addRowToTransfer(transfer);
+				if (transfer.getTransferStatus().equalsIgnoreCase("Approved")) {
 			accountDao.deductBalance(requestFrom, transfer.getAmount());
 			accountDao.creditBalance(me, transfer.getAmount());
-			transferDao.addRowToTransfer(transfer);
 		} 
 	}
-	
+	}
+
 	@RequestMapping(path = "/transfers/history", method = RequestMethod.GET)
 	public Transfer[] getTransferHistory(Principal principal) {
 		User user = userDao.findByUsername(principal.getName());
@@ -74,7 +77,6 @@ public class AccountController {
 		transfers = transferList.toArray(transfers);
 		return transfers;
 	}
-	
 
 	@RequestMapping(path = "/finduser", method = RequestMethod.GET)
 	public User[] getAllUsers() {
