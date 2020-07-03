@@ -16,4 +16,8 @@ public interface TransferDAO {
 
 	List<Transfer> getAllTransfers(Account account);
 
+
+
+	void updateTransfer(Transfer transfer);
+
 }

@@ -24,6 +24,9 @@ public class AccountController {
 	private AccountDAO accountDao;
 	private UserDAO userDao;
 	private TransferDAO transferDao;
+	private static final String STATUS_APPROVED = "Approved";
+	private static final String STATUS_PENDING = "Pending";
+	private static final String STATUS_REJECTED = "Rejected";
 
 	public AccountController(AccountDAO accountDao, UserDAO userDao, TransferDAO transferDao) {
 		this.accountDao = accountDao;
@@ -58,14 +61,23 @@ public class AccountController {
 	@RequestMapping(path = "/requestbucks", method = RequestMethod.PUT)
 	public void requestBucks(@RequestBody Transfer transfer) {
 		Account requestFrom = accountDao.findAccountByUserId(transfer.getAccountToId());
-		Account me = accountDao.findAccountByUserId(transfer.getAccountFromId());
 		if (requestFrom.hasEnoughMoney(transfer.getAmount())) {
 			transferDao.addRowToTransfer(transfer);
-				if (transfer.getTransferStatus().equalsIgnoreCase("Approved")) {
+		}
+	}
+	
+	@RequestMapping(path = "/reviewpending", method = RequestMethod.PUT)
+	public void approvePendingTransfers(@RequestBody Transfer transfer) {
+		Account requestFrom = accountDao.findAccountByUserId(transfer.getAccountToId());
+		Account me = accountDao.findAccountByUserId(transfer.getAccountFromId());
+		String status = transfer.getTransferStatus();
+		if (status.equalsIgnoreCase(STATUS_APPROVED)) {
 			accountDao.deductBalance(requestFrom, transfer.getAmount());
 			accountDao.creditBalance(me, transfer.getAmount());
-		} 
-	}
+			transferDao.updateTransfer(transfer);
+		} else if (status.equalsIgnoreCase(STATUS_REJECTED)) {
+			transferDao.updateTransfer(transfer);
+		}
 	}
 
 	@RequestMapping(path = "/transfers/history", method = RequestMethod.GET)
