@@ -49,8 +49,11 @@ public class AccountController {
 
 	@RequestMapping(path = "/sendbucks", method = RequestMethod.PUT)
 	public void sendBucks(@RequestBody Transfer transfer) {
+		// Remember that Transfer objects from the client side only carry the USER IDs, not the accounts
 		Account takeFrom = accountDao.findAccountByUserId(transfer.getAccountFromId());
 		Account giveTo = accountDao.findAccountByUserId(transfer.getAccountToId());
+		transfer.setAccountFromId(takeFrom.getAccountId());
+		transfer.setAccountToId(giveTo.getAccountId());
 		if (takeFrom.hasEnoughMoney(transfer.getAmount())) {
 			accountDao.deductBalance(takeFrom, transfer.getAmount());
 			accountDao.creditBalance(giveTo, transfer.getAmount());
@@ -61,6 +64,8 @@ public class AccountController {
 	@RequestMapping(path = "/requestbucks", method = RequestMethod.PUT)
 	public void requestBucks(@RequestBody Transfer transfer) {
 		Account requestFrom = accountDao.findAccountByUserId(transfer.getAccountToId());
+		transfer.setAccountFromId((accountDao.findAccountByUserId(transfer.getAccountFromId())).getAccountId());
+		transfer.setAccountToId(requestFrom.getAccountId());
 		if (requestFrom.hasEnoughMoney(transfer.getAmount())) {
 			transferDao.addRowToTransfer(transfer);
 		}

@@ -96,7 +96,7 @@ public class App {
 		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-10s%-7s", "ID", "From/To", "Status",
 				"Amount");
 		for (Transfer transfer : pastTransfers) {
-			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
+			String fromTo = (transfer.getTransferType().equalsIgnoreCase(TRANSFER_TYPE_SEND))
 					? "To: " + transfer.getAccountToName()
 					: "From: " + transfer.getAccountFromName();
 			transferMenu = String.format(transferMenu + "\n%-10d%-30s%-10s$%7.2f", transfer.getTransferId(), fromTo,
@@ -138,7 +138,7 @@ public class App {
 				"Amount");
 		for (Transfer transfer : pending) {
 			if (transfer.getTransferStatus().equalsIgnoreCase(TRANSFER_STATUS_PENDING)) {
-				String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
+				String fromTo = (transfer.getTransferType().equalsIgnoreCase(TRANSFER_TYPE_REQUEST))
 						? "To: " + transfer.getAccountToName()
 						: "From: " + transfer.getAccountFromName();
 				pendingTransferMenu = String.format(pendingTransferMenu + "\n%-10d%-30s$%7.2f",
@@ -180,14 +180,19 @@ public class App {
 		userMenu += "\n\nEnter ID of user you are sending to (0 to cancel)";
 
 		// Gets user choice
-		int sendToChoice = console.getUserInputInteger(userMenu);
+		int sendToChoice = 0;
+		try {
+			sendToChoice = console.getUserInputInteger(userMenu);
+		} catch (NumberFormatException ex) {
+			System.out.println("Please choose a valid userID number.");
+		}
 		if (sendToChoice == 0)
 			return;
 		BigDecimal amount = BigDecimal.ZERO;
 		try {
 			amount = new BigDecimal(console.getUserInput("Enter amount of TEBucks"));
 		} catch (NumberFormatException ex) {
-			System.out.println("Invalid money amount");
+			System.out.println("Invalid money amount.");
 		}
 
 		// If the amount being sent is positive
