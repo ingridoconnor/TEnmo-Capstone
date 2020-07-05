@@ -1,12 +1,17 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class TransferTest {
+import com.techelevator.tenmo.models.Transfer;
+
+
+
+public class TransferTest {
+
 	Transfer test = new Transfer();
 
 	@Test
@@ -51,5 +56,6 @@ class TransferTest {
 		test.setAmount(amount);
 		assertEquals(test.getAmount(), amount);
 	}
+
 
 }
