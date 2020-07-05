@@ -92,9 +92,15 @@ public class TransferSqlDAO implements TransferDAO {
 		transfer.setAccountToName(userDao.findUsernameByAccountId(results.getLong("account_to")));
 		return transfer;
 	}
-
-
-
 	
+	@Override
+	public void updateTransfer(Transfer transfer) {
+		// Pull the transfer by transfer ID and update its status
+		String sql = "UPDATE transfers SET transfer_status_id = "
+				+ "(SELECT transfer_statuses.transfer_status_id FROM transfer_statuses "
+				+ "WHERE transfer_statuses.transfer_status_desc = ?) WHERE transfer_id = ?";
+		// This should work regardless of whether the transfer is approved or rejected
+		jdbcTemplate.update(sql, transfer.getTransferStatus(), transfer.getTransferId());
+	}
 
 }
