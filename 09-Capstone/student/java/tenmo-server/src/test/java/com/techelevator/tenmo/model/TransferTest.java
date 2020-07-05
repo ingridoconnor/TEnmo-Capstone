@@ -1,14 +1,26 @@
 package com.techelevator.tenmo.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.math.BigDecimal;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
+public class TransferTest {
+	private Transfer test;
+	private static final String TYPE = "Request";
+	private static final String STATUS = "Pending";
+	private static final long FROM_ID = (long)(Math.random() * 1000);
+	private static final String FROM_NAME = "Iron Bank";
+	private static final long TO_ID = (long)(Math.random() * 1000);
+	private static final String TO_NAME = "Lannisters, LLC";
+	private static final BigDecimal AMOUNT_REQUESTED = BigDecimal.valueOf(99999999);
+	private static final long TRANSFER_ID = (long)(Math.random() * 1000);
 
-class TransferTest {
-	Transfer test = new Transfer();
-
+	@Before
+	public void setup() {
+		test = new Transfer();
+	}
+	
 	@Test
 	public void transfer_type_returns_groovy() {
 		String transferType = "groovy";
@@ -50,6 +62,15 @@ class TransferTest {
 		BigDecimal amount = BigDecimal.valueOf(1200.00);
 		test.setAmount(amount);
 		assertEquals(test.getAmount(), amount);
+	}
+	
+	@Test
+	public void getters_for_transfer_id_and_party_names_return_correctly() {
+		Transfer season8Sucks = new Transfer(TYPE, STATUS, FROM_ID, FROM_NAME, TO_ID,
+				TO_NAME, AMOUNT_REQUESTED, TRANSFER_ID);
+		assertEquals(TRANSFER_ID, season8Sucks.getTransferId());
+		assertEquals(FROM_NAME, season8Sucks.getAccountFromName());
+		assertEquals(TO_NAME, season8Sucks.getAccountToName());
 	}
 
 }
