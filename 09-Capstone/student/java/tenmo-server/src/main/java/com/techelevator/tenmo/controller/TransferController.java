@@ -27,11 +27,11 @@ public class TransferController {
 		this.userDao = userDao;
 	}
 	
-	@RequestMapping(path = "/send", method = RequestMethod.GET)
-	public List<User> listAllUsers() {
-		return userDao.findAll();
-		
-	}
+//	@RequestMapping(path = "/send", method = RequestMethod.GET)
+//	public List<User> listAllUsers() {
+//		return userDao.findAll();
+//		
+//	}
 //	@RequestMapping(path = "/send/{id}", method = RequestMethod.POST)
 //	public Transfer sendMoney(Principal principal) {
 //		//get our own id to deduct from our balance

@@ -1,6 +1,8 @@
 package com.techelevator.tenmo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
@@ -96,9 +98,10 @@ public class App {
 		String transferMenu = String.format("\nTransfer History\n%-10s%-30s%-10s%-7s", "ID", "From/To", "Status",
 				"Amount");
 		for (Transfer transfer : pastTransfers) {
-			String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
-					? "To: " + transfer.getAccountToName()
-					: "From: " + transfer.getAccountFromName();
+			// If I initiate the send/request, print To: person who needs to react
+			// If they initiate, print From: person who started the transfer
+			String fromTo = (transfer.getAccountFromId() == currentUser.getUser().getId()) ?
+						"To: " + transfer.getAccountToName() : "From: " + transfer.getAccountFromName();
 			transferMenu = String.format(transferMenu + "\n%-10d%-30s%-10s$%7.2f", transfer.getTransferId(), fromTo,
 					transfer.getTransferStatus(), transfer.getAmount());
 		}
@@ -108,7 +111,7 @@ public class App {
 			choice = console.getUserInputInteger(transferMenu);
 
 		} catch (NumberFormatException ex) {
-			System.out.println("Please enter a transfer ID number or 0 to cancel.");
+			System.out.println("*** Invalid transfer ID number ***");
 		}
 		boolean found = false;
 		if (choice == 0)
@@ -116,7 +119,7 @@ public class App {
 		else {
 			for (Transfer transfer : pastTransfers) {
 				if (transfer.getTransferId() == choice) {
-					System.out.println("Transfer Details: ");
+					System.out.println("\nTransfer Details: ");
 					System.out.println("ID: " + transfer.getTransferId());
 					System.out.println("From: " + transfer.getAccountFromName());
 					System.out.println("To: " + transfer.getAccountToName());
@@ -127,32 +130,41 @@ public class App {
 				}
 			}
 			if (!found) {
+<<<<<<< HEAD
 				System.out.println("Please choose a valid transfer ID or 0 to cancel");
+=======
+				System.out.println("*** Transfer not found ***");
+>>>>>>> c996b4721af36b5e6fd8ac5a7e672c02aa89f601
 			}
 		}
 	}
 
 	private void viewPendingRequests() {
-		Transfer[] pending = accountService.getTransferHistoryClient(currentUser);
-		String pendingTransferMenu = String.format("\n Pending Transfers\n%-10s%-30s%-7s", "ID", "From/To",
+		Transfer[] allTransfers = accountService.getTransferHistoryClient(currentUser);
+		List<Transfer> pendingList = new ArrayList<>();
+		String pendingTransferMenu = String.format("\nPending Transfers\n%-10s%-30s%-7s", "ID", "From/To",
 				"Amount");
-		for (Transfer transfer : pending) {
+		for (Transfer transfer : allTransfers) {
 			if (transfer.getTransferStatus().equalsIgnoreCase(TRANSFER_STATUS_PENDING)) {
-				String fromTo = (currentUser.getUser().getId() == transfer.getAccountFromId())
-						? "To: " + transfer.getAccountToName()
-						: "From: " + transfer.getAccountFromName();
+				// If the transfer is a Request and I am the requester,
+				// print out To: [Person I'm asking for money]
+				// And if I am being asked for money,
+				// print out FROM: [Requester]
+				pendingList.add(transfer);
+				String fromTo = (transfer.getAccountFromId() == currentUser.getUser().getId()) ?
+						"To: " + transfer.getAccountToName() : "From: " + transfer.getAccountFromName();	
 				pendingTransferMenu = String.format(pendingTransferMenu + "\n%-10d%-30s$%7.2f",
 						transfer.getTransferId(), fromTo, transfer.getAmount());
 			}
 
 		}
-		pendingTransferMenu += "\nPlease enter transfer ID to approve/reject (0 to cancel) ";
+		pendingTransferMenu += "\nPlease enter transfer ID to approve/reject (0 to cancel)";
 		int userChoice = 0;
+		Transfer[] pending = pendingList.toArray(new Transfer[pendingList.size()]);
 		try {
 			userChoice = console.getUserInputInteger(pendingTransferMenu);
-
 		} catch (NumberFormatException ex) {
-			System.out.println("Please enter a transfer ID number or 0 to cancel.");
+			System.out.println("*** Invalid transfer ID number ***");
 		}
 		boolean wasFound = false;
 		if (userChoice == 0)
@@ -160,12 +172,12 @@ public class App {
 		else {
 			for (Transfer transfer : pending) {
 				if (transfer.getTransferId() == userChoice) {
-					System.out.println(": ");
+					System.out.println("*** Not yet implemented ***");
 					wasFound = true;
 				}
 			}
 			if (!wasFound) {
-				System.out.println("Please choose a valid transfer ID ");
+				System.out.println("*** Transfer not found ***");
 			}
 		}
 	}
@@ -180,14 +192,19 @@ public class App {
 		userMenu += "\n\nEnter ID of user you are sending to (0 to cancel)";
 
 		// Gets user choice
-		int sendToChoice = console.getUserInputInteger(userMenu);
+		int sendToChoice = 0;
+		try {
+			sendToChoice = console.getUserInputInteger(userMenu);
+		} catch (NumberFormatException ex) {
+			System.out.println("Please choose a valid userID number.");
+		}
 		if (sendToChoice == 0)
 			return;
 		BigDecimal amount = BigDecimal.ZERO;
 		try {
 			amount = new BigDecimal(console.getUserInput("Enter amount of TEBucks"));
 		} catch (NumberFormatException ex) {
-			System.out.println("Invalid money amount");
+			System.out.println("Invalid money amount.");
 		}
 
 		// If the amount being sent is positive

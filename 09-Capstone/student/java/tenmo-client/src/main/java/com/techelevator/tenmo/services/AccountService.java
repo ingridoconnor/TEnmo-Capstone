@@ -29,55 +29,58 @@ public class AccountService {
 		Account account = new Account();
 		try {
 			account = restTemplate
-					.exchange(BASE_URL + "account/balance", HttpMethod.GET, makeAccountEntity(user), Account.class).getBody();
+					.exchange(BASE_URL + "account/balance", HttpMethod.GET, makeAccountEntity(user), Account.class)
+					.getBody();
 		} catch (RestClientResponseException ex) {
-			// TODO account service exception class
-			// throw new AccountServiceException(ex.getRawStatusCode() + " : " +
-			// ex.getResponseBodyAsString());
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
 		}
 		return account.getAccountBalance();
 	}
-	
+
 	public void sendTransfer(AuthenticatedUser user, Transfer transfer) {
 		AUTH_TOKEN = user.getToken();
 		try {
-			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.PUT, makeTransferEntity(transfer), Transfer.class);
+			restTemplate.exchange(BASE_URL + "account/sendbucks", HttpMethod.PUT, makeTransferEntity(transfer),
+					Transfer.class);
 		} catch (RestClientResponseException ex) {
-            // TODO write an AccountServiceException?
-        }
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		}
 	}
+
 	public void requestTransfer(AuthenticatedUser user, Transfer transfer) {
 		AUTH_TOKEN = user.getToken();
 		try {
-			restTemplate.exchange(BASE_URL + "account/requestbucks", HttpMethod.PUT, makeTransferEntity(transfer), Transfer.class);
+			restTemplate.exchange(BASE_URL + "account/requestbucks", HttpMethod.PUT, makeTransferEntity(transfer),
+					Transfer.class);
 		} catch (RestClientResponseException ex) {
-            // TODO write an AccountServiceException?
-        }
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		}
 	}
-	
+
 	public User[] getAllUsers(AuthenticatedUser user) {
 		AUTH_TOKEN = user.getToken();
 		User[] users = null;
 		try {
-			users = restTemplate.exchange(BASE_URL + "account/finduser", HttpMethod.GET, makeAuthEntity(), 
-					User[].class).getBody();
-		}  catch (RestClientResponseException ex) {
-            // TODO write an AccountServiceException?
-        }
+			users = restTemplate.exchange(BASE_URL + "account/finduser", HttpMethod.GET, makeAuthEntity(), User[].class)
+					.getBody();
+		} catch (RestClientResponseException ex) {
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		}
 		return users;
 	}
+
 	public Transfer[] getTransferHistoryClient(AuthenticatedUser user) {
 		AUTH_TOKEN = user.getToken();
 		Transfer[] transfers = null;
 		try {
-			transfers = restTemplate.exchange(BASE_URL + "account/transfers/history", HttpMethod.GET, makeAuthEntity(), 
+			transfers = restTemplate.exchange(BASE_URL + "account/transfers/history", HttpMethod.GET, makeAuthEntity(),
 					Transfer[].class).getBody();
-		}  catch (RestClientResponseException ex) {
-            // TODO write an AccountServiceException?
-        }
+		} catch (RestClientResponseException ex) {
+			System.out.println(ex.getRawStatusCode() + " : " + ex.getResponseBodyAsString());
+		}
 		return transfers;
 	}
-	
+
 	private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

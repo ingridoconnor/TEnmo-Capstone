@@ -61,7 +61,8 @@ public class AccountSqlDAO implements AccountDAO {
 			account = mapRowToAccount(result);
 		}
 		return account;
-	}
+	}   
+
 //	@Override
 //	public Account findAccountByUserName(String name) {
 //		Account account = null;

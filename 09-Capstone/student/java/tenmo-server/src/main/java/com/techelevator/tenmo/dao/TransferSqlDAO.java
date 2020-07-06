@@ -18,8 +18,8 @@ public class TransferSqlDAO implements TransferDAO {
 	public TransferSqlDAO(JdbcTemplate jdbcTemplate, UserDAO userDao) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.userDao = userDao;
-		
 	}
+	
 	@Override
 	public List<Transfer> getAllTransfers(Account account){
 		List<Transfer> transfers = new ArrayList<>();
@@ -32,10 +32,6 @@ public class TransferSqlDAO implements TransferDAO {
         return transfers;
     }
 	
-
-
-
-	//Refactor: Separate method for retrieving transfer_type_id
 	private int getTransferTypeId(Transfer transfer) {
 		String sqlGetTransferTypeId = "SELECT transfer_type_id FROM transfer_types WHERE transfer_type_desc = ?";
 		SqlRowSet transferTypeResult = jdbcTemplate.queryForRowSet(sqlGetTransferTypeId, transfer.getTransferType());
@@ -47,7 +43,6 @@ public class TransferSqlDAO implements TransferDAO {
 		return transferTypeId;
 	}
 	
-	// Refactor: create separate method for retrieving transfer_status_id
 	private int getTransferStatusId(Transfer transfer) {
 		String sqlGetTransferStatusId = "SELECT transfer_Status_id FROM transfer_statuses WHERE transfer_status_desc = ?";
 		SqlRowSet transferStatusResult = jdbcTemplate.queryForRowSet(sqlGetTransferStatusId,
@@ -69,8 +64,12 @@ public class TransferSqlDAO implements TransferDAO {
 		if (statusId > 0 && typeId > 0) {
 			String sqlAddRowToTransfer = "INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) "
 					+ "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
-			SqlRowSet transferIdResult = jdbcTemplate.queryForRowSet(sqlAddRowToTransfer, typeId,
-					statusId, transfer.getAccountFromId(), transfer.getAccountToId(), transfer.getAmount());
+			SqlRowSet transferIdResult = jdbcTemplate.queryForRowSet(sqlAddRowToTransfer,
+					typeId, 
+					statusId, 
+					transfer.getAccountFromId(), 
+					transfer.getAccountToId(), 
+					transfer.getAmount());
 			if (transferIdResult.next()) {
 				transfer.setTransferId(transferIdResult.getLong("transfer_id"));
 				return true;

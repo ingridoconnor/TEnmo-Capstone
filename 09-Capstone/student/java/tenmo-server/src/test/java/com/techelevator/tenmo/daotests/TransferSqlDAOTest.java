@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import com.techelevator.tenmo.dao.AccountDAO;
+import com.techelevator.tenmo.dao.AccountSqlDAO;
 import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
@@ -55,23 +57,6 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		userDao = new UserSqlDAO(jdbcTemplate);
 		transferDao = new TransferSqlDAO(jdbcTemplate, userDao);
 		
-		// Apologies for communication lapses and typos due to hunger lol
-		// Pardon the wall of words also due to hunger
-		
-		// Create fake users in Java and put them into our database table "users"
-		// Why? We really want to actually make fake transfers to test this DAO 
-		// But the table "transfers" is being extra and won't let any of its columns be null
-		// (see DbVis > TEnmo > tenmo > public > TABLE > transfers > Columns > NULLABLE where everything is 0, 
-		// which I THINK means "false")
-		
-		// So that means "account_from" and "account_to" have to have actual, legit account ids
-		// BUT the accounts table is ALSO being extra and won't let any of its columns accept null either
-		
-		// Which means to have working fake accounts so we can have working fake transfers, we have to make sure
-		// the accounts have legit user_id's.
-		// And that means we need to start all the way at the beginning and make fake Users. :'(
-		
-		// So back to making fake users in Java and our database:
 		badGuy = new User();
 		badGuy2 = new User();
 		badGuy.setUsername(DEFAULT_USER_NAME);
@@ -119,17 +104,6 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		rollback();
 	}
 
-	// Now for the tests
-	// TransferSqlDAO has 2 methods so far that can be tested:
-	// 1) getAllTransfers(Account account) - returns all transfers for a specific account
-	// 		Separately test: a) If the account sends money and the transfer goes through, does that get included in the return list here?
-	// 						b) EXTRA: If the account receives money and the transfer goes through, does that get included in the return?
-	//						c) If the account tries to send money but the transfer is invalid, make sure the return list does NOT include that
-	//						(We checked that last one by eye. There might be other stuff but this is all I can think of right now. Feel free to think of more!)
-	//
-	// 2) addRowToTransfer(Transfer newTransfer) - adds a new valid transfer to the database's "transfers" table
-	//		Separately test: a) If the transfer is valid, the size of the return list after the addition should be the old size + 1
-	// 						b) If the transfer is invalid, the size of the return list should remain unchanged
 	@Test
 	public void transfer_adds_row_to_transfer_table() {
 		assertEquals(0, transferDao.getAllTransfers(accountOne).size());
@@ -137,6 +111,4 @@ public class TransferSqlDAOTest extends DAOIntegrationTest {
 		assertEquals(1, transferDao.getAllTransfers(accountOne).size());
 		
 	}
-	
-
 }
