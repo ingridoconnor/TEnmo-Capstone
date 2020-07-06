@@ -102,7 +102,7 @@ public class App {
 			transferMenu = String.format(transferMenu + "\n%-10d%-30s%-10s$%7.2f", transfer.getTransferId(), fromTo,
 					transfer.getTransferStatus(), transfer.getAmount());
 		}
-		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel) ";
+		transferMenu += "\nPlease enter transfer ID to view details (0 to cancel.) ";
 		int choice = 0;
 		try {
 			choice = console.getUserInputInteger(transferMenu);
@@ -127,7 +127,7 @@ public class App {
 				}
 			}
 			if (!found) {
-				System.out.println("Please choose a valid transfer ID or 0 to cancel.");
+				System.out.println("Please choose a valid transfer ID or 0 to cancel");
 			}
 		}
 	}

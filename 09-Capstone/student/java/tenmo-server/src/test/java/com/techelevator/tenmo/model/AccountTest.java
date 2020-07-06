@@ -10,6 +10,7 @@ class AccountTest {
 
 	Account test = new Account();
 	
+	
 	@Test
 	public void accountid_returns_26() {
 		long accountId = 26;
